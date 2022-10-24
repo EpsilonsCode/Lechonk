@@ -1,6 +1,10 @@
 package com.omicron.lechonk;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,11 +16,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class Lechonk extends Animal {
-    protected Lechonk(EntityType<? extends Animal> p_27557_, Level p_27558_) {
+
+    public LECHONK_TYPE TYPE;
+
+    protected Lechonk(EntityType<? extends Animal> p_27557_, Level p_27558_, LECHONK_TYPE TYPE
+    ) {
         super(p_27557_, p_27558_);
+        this.TYPE = TYPE;
     }
 
     @Nullable
@@ -42,6 +52,38 @@ public class Lechonk extends Animal {
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+    }
+
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.PIG_AMBIENT;
+    }
+
+    protected SoundEvent getHurtSound(DamageSource p_29502_) {
+        return SoundEvents.PIG_HURT;
+    }
+
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.PIG_DEATH;
+    }
+
+    protected void playStepSound(BlockPos p_29492_, BlockState p_29493_) {
+        this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
+    }
+
+    public enum LECHONK_TYPE {
+        BLAZEROD,
+        COAL,
+        COPPER,
+        DIAMOND,
+        EMERALD,
+        ENDERPEARL,
+        GHASTTEAR,
+        GOLD,
+        IRON,
+        LAPIS,
+        NETHERITE,
+        NETHERSTAR,
+        REDSTONE
     }
 
 }

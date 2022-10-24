@@ -4,6 +4,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Locale;
+
 public class LechonkRenderer extends MobRenderer<Lechonk, LechonkModel<Lechonk>> {
 
     private static final ResourceLocation LECHONK_LOCATION = new ResourceLocation(LechonkMod.MODID, "textures/entity/lechonk_iron.png");
@@ -16,6 +18,7 @@ public class LechonkRenderer extends MobRenderer<Lechonk, LechonkModel<Lechonk>>
 
     @Override
     public ResourceLocation getTextureLocation(Lechonk p_114482_) {
-        return LECHONK_LOCATION;
+        //System.out.println(p_114482_.TYPE.toString().toLowerCase(Locale.ROOT));
+        return new ResourceLocation(LechonkMod.MODID, "textures/entity/lechonk_" + p_114482_.TYPE.toString().toLowerCase(Locale.ROOT) + ".png");
     }
 }

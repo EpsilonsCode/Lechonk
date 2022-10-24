@@ -11,7 +11,9 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraftforge.common.Tags;
 
 public class LechonkModel<T extends Entity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -66,7 +68,13 @@ public class LechonkModel<T extends Entity> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.root.getChild("body").getChild("head").xRot = headPitch * ((float)Math.PI / 180F);
+		this.root.getChild("body").getChild("head").yRot = netHeadYaw * ((float)Math.PI / 180F);
 
+		this.root.getChild("legs").getChild("right").xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+		this.root.getChild("legs").getChild("left").xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+		this.root.getChild("body").getChild("arms").getChild("rightA").xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+		this.root.getChild("body").getChild("arms").getChild("leftA").xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
 	}
 
 	@Override

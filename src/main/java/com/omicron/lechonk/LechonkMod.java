@@ -4,9 +4,11 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -26,6 +28,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(LechonkMod.MODID)
 public class LechonkMod
@@ -33,14 +38,21 @@ public class LechonkMod
     // Define mod id in a common place for everything to reference
     public static final String MODID = "lechonk";
     // Directly reference a slf4j logger
+    public static ArrayList<RegistryObject<EntityType<Lechonk>>> list = new ArrayList<>();
 
     public static DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
 
-    public static RegistryObject<EntityType<Lechonk>> LECHONK_ENTITY = ENTITIES.register("lechonk", () -> EntityType.Builder.of(Lechonk::new, MobCategory.CREATURE)
-            .sized(0.6f, 1.95f)
-            .clientTrackingRange(8)
-            .setShouldReceiveVelocityUpdates(false)
-            .build("lechonk"));
+    static {
+        for(Lechonk.LECHONK_TYPE type : Lechonk.LECHONK_TYPE.values())
+        {
+            RegistryObject<EntityType<Lechonk>> a =  ENTITIES.register("lechonk_" + type.toString().toLowerCase(Locale.ROOT), () -> EntityType.Builder.of((EntityType<Lechonk> p_27557_, Level p_27558_) -> new Lechonk(p_27557_, p_27558_, type), MobCategory.CREATURE)
+                    .sized(0.6f, 1.95f)
+                    .clientTrackingRange(8)
+                    .setShouldReceiveVelocityUpdates(false)
+                    .build("lechonk_" + type.toString().toLowerCase(Locale.ROOT)));
+            list.add(a);
+        }
+    }
 
     public LechonkMod()
     {
@@ -53,7 +65,8 @@ public class LechonkMod
 
     public static void onRenderer(EntityRenderersEvent.RegisterRenderers event)
     {
-        event.registerEntityRenderer(LECHONK_ENTITY.get(), LechonkRenderer::new);
+        list.forEach((a) -> {event.registerEntityRenderer(a.get(), LechonkRenderer::new);});
+
     }
 
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -61,6 +74,7 @@ public class LechonkMod
     }
 
     public static void onAttributeCreate(EntityAttributeCreationEvent event) {
-        event.put(LECHONK_ENTITY.get(), Lechonk.prepareAttributes().build());
+        list.forEach((a) -> {event.put(a.get(), Lechonk.prepareAttributes().build());});
+
     }
 }
